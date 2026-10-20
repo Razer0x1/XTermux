@@ -1,0 +1,12 @@
+# Build mirrors, products, and caches.
+# The iOS build happens in a WSL ext4 mirror (build_ios.sh); dist/ holds
+# local deliverables (Xtermux.ipa) — binaries don't belong in the repo.
+.build/
+xtool/
+dist/
+*.ipa
+.swiftpm/
+
+# OS noise
+.DS_Store
+Thumbs.db
