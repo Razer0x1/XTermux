@@ -18,6 +18,81 @@ packages.
 | Linux VM on-device | ❌ iOS grants no compliant hypervisor — documented, not simulated |
 | root / jailbreak / kernel replacement | ❌ Never — and never attempted |
 
+## Install on your iPhone — Sideloadly, full walkthrough
+
+There is no App Store entry for XTermux. You install it by **sideloading** the
+release IPA: a signing tool (Sideloadly) signs the app with *your* Apple ID and
+iOS accepts it the same way it accepts any developer build. Free, no jailbreak,
+no paid account required.
+
+### What you need
+
+| Item | Notes |
+|---|---|
+| iPhone or iPad | running **iOS 16.0 or newer** |
+| Windows 10/11 or macOS | Sideloadly runs on both |
+| USB cable | data cable, not charge-only |
+| Any Apple ID | free one is fine. Free accounts cap at **3 sideloaded apps** and the signature **expires after 7 days** (just re-sign). A paid Apple Developer account ($99/yr) gets a 1-year signature instead. |
+| The IPA | download [`XTermux.ipa` from Releases](https://github.com/Razer0x1/XTermux/releases/latest) — it is *unsigned*; Sideloadly signs it during install |
+| (only on Windows) | **iTunes** (from apple.com/itunes) **or** the **Apple Devices** app (Microsoft Store) — not for music, but because it installs Apple's USB driver |
+
+### Steps
+
+1. **Install iTunes / Apple Devices** (Windows only) for the USB driver, then
+   reboot once so the driver is picked up. macOS users skip this — the driver
+   is built in.
+2. **Install [Sideloadly](https://sideloadly.io)** — Windows installer or macOS
+   package. No account inside Sideloadly is needed; you will sign in with your
+   Apple ID in step 6.
+3. **Download `XTermux.ipa`** from this repo's
+   [Releases](https://github.com/Razer0x1/XTermux/releases/latest) page.
+4. **Plug in your iPhone** with a data cable. Unlock it; if asked, tap
+   **Trust This Computer** and enter your passcode. Keep the phone *unlocked
+   and the screen awake* for the whole install.
+5. **Open Sideloadly** and drag `XTermux.ipa` into the big window (or use the
+   IPA button to browse).
+6. **Apple ID field:** type your Apple ID e-mail exactly. If you sign in with
+   two-factor authentication, Sideloadly will show a **6-digit code** prompt —
+   complete it in your browser/the popup and return to Sideloadly. (Some
+   setups instead ask for an **app-specific password**: create one at
+   [account.apple.com](https://account.apple.com) → Sign-In and Security →
+   App-Specific Passwords, then paste it where Sideloadly asks.)
+7. **Press Start.** Sideloadly signs the app with your Apple ID and pushes it
+   to the phone. Progress is shown in the log; wait for the "Done" line.
+8. **Trust the developer on the iPhone:** open
+   **Settings → General → VPN & Device Management** → tap the profile that
+   shows your Apple ID under "Developer App" → **Trust**.
+   (On older iOS the menu is "Profiles & Device Management".)
+9. **Open XTermux** from the Home Screen. First launch starts you a fresh
+   sandbox — open the Terminal tab, try `ls`, `uname -a`, `kern info`, or set
+   up an SSH host in **Settings → SSH**.
+
+### Updating later
+
+Sideload the newer IPA **over** the installed app the same way. Because the
+bundle ID (`com.xtermux.app`) stays the same, iOS treats it as an app update —
+your sandbox files, history, settings, and SSH profiles survive. Only
+*uninstalling* the app wipes its data.
+
+### Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| Sideloadly sees no device | Install the iTunes/Apple-Devices driver, reboot PC **and** phone, use another USB port/cable, keep the phone unlocked |
+| "Unable to install" on the phone | Make sure you completed the Trust step in step 8 **and** you signed in with the same Apple ID in Sideloadly; retry with the screen unlocked |
+| 2FA / sign-in loops | Use a fresh one-time code each attempt; if loops persist, create an app-specific password (step 6) and use it |
+| App opens then crashes or shows "expired" | The 7-day free signature ran out — re-sign with Sideloadly (step 6). Prefer automatic? [AltStore](https://altstore.io) re-signs over Wi-Fi in the background with the same Apple ID and keeps your data |
+| Install stalls at "Installing…" for minutes | Ignore the Home-Screen grey icon; wait for Sideloadly's "Done" before judging — iOS finishes allocation after Sideloadly reports success |
+| Other Sideloadly errors | Usually transient Apple auth servers — click Start again; if it persists, update Sideloadly and check its own help page |
+
+### Alternatives (honest one-liners)
+
+- **AltStore** — same free-signing flow with automatic 7-day background
+  refresh; install AltServer, then open the IPA on-device from Files.
+- **TrollStore** — permanent, no expiry, but only available on the specific
+  iOS versions its exploit covers — check its repository for current support
+  before relying on it.
+
 ## The five tabs
 
 1. **Terminal** — multiple sessions (local sandbox shell + SSH remotes),
@@ -184,7 +259,7 @@ one-time cost of doing the rename completely.
 
 | Area | Implemented | Planned |
 |---|---|---|
-| Shell | 34 builtins, pipes, redirects, expansion, exit codes | `&&`/`\|\|`/`;`, globs, command substitution |
+| Shell | 35 builtins, pipes, redirects, expansion, exit codes | `&&`/`\|\|`/`;`, globs, command substitution |
 | Terminal | sessions, Ctrl-R, completion, palette, accessory row, iPad split | theming presets per-pane, scrollback search |
 | SSH | PTY sessions, password + OpenSSH RSA/Ed25519 keys, Keychain secrets | host-key pinning, SFTP browse, agent forwarding |
 | Linux VM | feasibility matrix (honest "no") | — (blocked by iOS platform rules) |
